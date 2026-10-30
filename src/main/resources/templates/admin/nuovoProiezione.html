@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Nuova proiezione</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/proiezioni}">&larr; Torna al programma</a>
+
+    <h1>Programma una proiezione</h1>
+
+    <p>
+        Il film deve partecipare al festival scelto e la sala non deve essere occupata
+        nello stesso intervallo temporale.
+    </p>
+
+    <form th:action="@{/admin/proiezione/nuova}" th:object="${proiezione}" method="post" class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label for="festival">Festival</label>
+            <select id="festival" th:field="*{festival.id}" required>
+                <option value="">-- Seleziona un festival --</option>
+                <option th:each="f : ${festival}" th:value="${f.id}"
+                        th:text="${f.nome + ' (' + f.anno + ')'}">Festival</option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('festival')}" th:errors="*{festival}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="film">Film</label>
+            <select id="film" th:field="*{film.id}" required>
+                <option value="">-- Seleziona un film --</option>
+                <option th:each="f : ${film}" th:value="${f.id}"
+                        th:text="${f.titolo + ' (' + f.anno + ', ' + f.durata + ' min)'}">Film</option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('film')}" th:errors="*{film}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="sala">Sala</label>
+            <select id="sala" th:field="*{sala.id}" required>
+                <option value="">-- Seleziona una sala --</option>
+                <option th:each="s : ${sale}" th:value="${s.id}"
+                        th:text="${s.nome + ' (' + s.capienza + ' posti)'}">Sala</option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('sala')}" th:errors="*{sala}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dataOra">Data e ora</label>
+            <input type="datetime-local" id="dataOra" th:field="*{dataOra}" required />
+            <span class="error" th:if="${#fields.hasErrors('dataOra')}" th:errors="*{dataOra}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="stato">Stato</label>
+            <select id="stato" th:field="*{stato}">
+                <option th:each="s : ${stati}" th:value="${s}" th:text="${s}">PROGRAMMATA</option>
+            </select>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Programma proiezione</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

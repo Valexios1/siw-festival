@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Programma delle proiezioni</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Programma delle proiezioni</h1>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <p th:if="${isAdmin}">
+        <a class="btn" th:href="@{/admin/proiezione/nuova}">Programma una proiezione</a>
+    </p>
+
+    <p th:if="${#lists.isEmpty(proiezioni)}">Nessuna proiezione in programma.</p>
+
+    <table class="tabella" th:unless="${#lists.isEmpty(proiezioni)}">
+        <thead>
+        <tr>
+            <th>Data e ora</th>
+            <th>Film</th>
+            <th>Festival</th>
+            <th>Sala</th>
+            <th>Stato</th>
+            <th th:if="${isAdmin}">Gestione</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${proiezioni}">
+            <td th:text="${p.dataOra != null ? #temporals.format(p.dataOra, 'dd/MM/yyyy HH:mm') : 'n/d'}">01/11/2026 20:30</td>
+            <td>
+                <a th:href="@{/film/{id}(id=${p.film.id})}" th:text="${p.film.titolo}">Titolo</a>
+            </td>
+            <td>
+                <a th:href="@{/festival/{id}(id=${p.festival.id})}" th:text="${p.festival.nome}">Festival</a>
+            </td>
+            <td th:text="${p.sala.nome}">Sala</td>
+            <td>
+                <span class="badge-stato" th:classappend="'stato-' + ${p.stato}" th:text="${p.stato}">PROGRAMMATA</span>
+            </td>
+            <td th:if="${isAdmin}">
+                <form th:action="@{/admin/proiezione/{id}/stato(id=${p.id})}" method="post" class="inline-form">
+                    <select name="stato" aria-label="Stato della proiezione">
+                        <option th:each="s : ${stati}"
+                                th:value="${s}"
+                                th:text="${s}"
+                                th:selected="${s == p.stato}">PROGRAMMATA</option>
+                    </select>
+                    <button type="submit" class="btn">Aggiorna stato</button>
+                </form>
+                <a class="btn" th:href="@{/admin/proiezione/{id}/modifica(id=${p.id})}">Modifica</a>
+                <form th:action="@{/admin/proiezione/{id}/elimina(id=${p.id})}" method="post" class="inline-form"
+                      onsubmit="return confirm('Eliminare questa proiezione?');">
+                    <button type="submit" class="btn btn-danger">Elimina</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

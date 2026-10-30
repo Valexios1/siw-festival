@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Errore del server</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>500 - Errore del server</h1>
+
+    <p class="error-msg" th:if="${messaggio != null}" th:text="${messaggio}">Messaggio di errore</p>
+    <p th:unless="${messaggio != null}">Si è verificato un errore interno. Riprova più tardi.</p>
+
+    <a class="btn-back" th:href="@{/}">&larr; Torna alla home</a>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

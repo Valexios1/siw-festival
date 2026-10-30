@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Modifica sala</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/admin/sale}">&larr; Torna alle sale</a>
+
+    <h1 th:text="'Modifica sala: ' + ${sala.nome}">Modifica sala</h1>
+
+    <form th:action="@{/admin/sala/{id}/modifica(id=${sala.id})}" th:object="${sala}" method="post"
+          class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" th:field="*{nome}" required />
+            <span class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="indirizzo">Indirizzo</label>
+            <input type="text" id="indirizzo" th:field="*{indirizzo}" required />
+            <span class="error" th:if="${#fields.hasErrors('indirizzo')}" th:errors="*{indirizzo}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="capienza">Capienza</label>
+            <input type="number" id="capienza" th:field="*{capienza}" min="1" required />
+            <span class="error" th:if="${#fields.hasErrors('capienza')}" th:errors="*{capienza}"></span>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Salva modifiche</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

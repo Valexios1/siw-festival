@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Siw Festival</title>
+</head>
+<body>
+<!--
+  Frammento di intestazione, incluso da tutte le pagine con
+  <div th:replace="~{fragments/header :: header}"></div>
+  Il logo e' testuale: il progetto non gestisce immagini.
+-->
+<header th:fragment="header">
+    <div class="logo">
+        <a th:href="@{/}"><span class="brand-name">Siw Festival</span></a>
+    </div>
+
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/festival}">Festival</a>
+        <a th:href="@{/film}">Film</a>
+        <a th:href="@{/proiezioni}">Proiezioni</a>
+        <a th:if="${isAdmin}" th:href="@{/admin}">Pannello Admin</a>
+        <a th:if="${userDetails != null}" th:href="@{/area-personale}">Area personale</a>
+    </nav>
+
+    <div class="utente">
+        <th:block th:if="${userDetails != null}">
+            <span class="user-name" th:text="${userDetails.username}">utente</span>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </th:block>
+        <th:block th:unless="${userDetails != null}">
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/register}">Registrati</a>
+        </th:block>
+    </div>
+</header>
+</body>
+</html>

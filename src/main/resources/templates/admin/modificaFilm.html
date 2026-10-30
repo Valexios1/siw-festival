@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Modifica film</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/film/{id}(id=${film.id})}">&larr; Torna al film</a>
+
+    <h1 th:text="'Modifica film: ' + ${film.titolo}">Modifica film</h1>
+
+    <form th:action="@{/admin/film/{id}/modifica(id=${film.id})}" th:object="${film}" method="post"
+          class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label for="titolo">Titolo</label>
+            <input type="text" id="titolo" th:field="*{titolo}" required />
+            <span class="error" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="anno">Anno</label>
+            <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
+            <span class="error" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="durata">Durata (minuti)</label>
+            <input type="number" id="durata" th:field="*{durata}" min="1" required />
+            <span class="error" th:if="${#fields.hasErrors('durata')}" th:errors="*{durata}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="genere">Genere</label>
+            <select id="genere" th:field="*{genere}" required>
+                <option value="">-- Seleziona --</option>
+                <option th:each="g : ${generi}" th:value="${g}" th:text="${g}">DRAMMATICO</option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('genere')}" th:errors="*{genere}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="paeseProduzione">Paese di produzione</label>
+            <input type="text" id="paeseProduzione" th:field="*{paeseProduzione}" required />
+            <span class="error" th:if="${#fields.hasErrors('paeseProduzione')}" th:errors="*{paeseProduzione}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="regista">Regista</label>
+            <input type="text" id="regista" th:field="*{regista}" required />
+            <span class="error" th:if="${#fields.hasErrors('regista')}" th:errors="*{regista}"></span>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Salva modifiche</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

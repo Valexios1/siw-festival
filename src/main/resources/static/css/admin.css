@@ -1,0 +1,27 @@
+/*
+ * admin.css
+ * Specifico dell'area amministratore.
+ * Da caricare SOLO nelle pagine riservate all'ADMIN (pannello admin, gestione
+ * festival, film, attori, sale e proiezioni), dopo stile.css.
+ * Tutte quelle pagine usano <body class="admin">.
+ */
+
+body.admin {
+    background-color: #f5eee4;
+}
+
+body.admin header {
+    border-bottom-color: var(--primario-scuro);
+}
+
+body.admin .card {
+    border-top-color: var(--primario-scuro);
+}
+
+body.admin .btn-back {
+    color: var(--primario-scuro);
+}
+
+body.admin .form-standard {
+    border-top: 5px solid var(--primario-scuro);
+}

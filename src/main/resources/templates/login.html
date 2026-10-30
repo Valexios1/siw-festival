@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Login</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Accedi</h1>
+
+    <div class="error-msg" th:if="${param.error}">Username o password non corretti.</div>
+    <div class="success-msg" th:if="${param.logout}">Logout effettuato.</div>
+
+    <form th:action="@{/login}" method="post" class="form-standard">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autofocus />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-azioni">
+            <button type="submit" class="btn">Login</button>
+            <span>Non hai un account? <a th:href="@{/register}">Registrati</a></span>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

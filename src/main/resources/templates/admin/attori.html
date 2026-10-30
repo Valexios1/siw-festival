@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Attori</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/admin}">&larr; Torna al pannello admin</a>
+
+    <h1>Attori</h1>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <p>
+        <a class="btn" th:href="@{/admin/attore/nuovo}">Nuovo attore</a>
+    </p>
+
+    <p th:if="${#lists.isEmpty(attori)}">Nessun attore in archivio.</p>
+
+    <table class="tabella" th:unless="${#lists.isEmpty(attori)}">
+        <thead>
+        <tr>
+            <th>Cognome</th>
+            <th>Nome</th>
+            <th>Data di nascita</th>
+            <th>Nazionalità</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a : ${attori}">
+            <td th:text="${a.cognome}">Cognome</td>
+            <td th:text="${a.nome}">Nome</td>
+            <td th:text="${a.dataNascita != null ? #temporals.format(a.dataNascita, 'dd/MM/yyyy') : 'n/d'}">01/01/1924</td>
+            <td th:text="${a.nazionalita}">Italiana</td>
+            <td>
+                <a class="btn" th:href="@{/admin/attore/{id}/modifica(id=${a.id})}">Modifica</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

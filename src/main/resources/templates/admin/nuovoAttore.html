@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Nuovo attore</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/admin/attori}">&larr; Torna agli attori</a>
+
+    <h1>Nuovo attore</h1>
+
+    <form th:action="@{/admin/attore/nuovo}" th:object="${attore}" method="post" class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" th:field="*{nome}" required />
+            <span class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="cognome">Cognome</label>
+            <input type="text" id="cognome" th:field="*{cognome}" required />
+            <span class="error" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dataNascita">Data di nascita</label>
+            <input type="date" id="dataNascita" th:field="*{dataNascita}" required />
+            <span class="error" th:if="${#fields.hasErrors('dataNascita')}" th:errors="*{dataNascita}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="nazionalita">Nazionalità</label>
+            <input type="text" id="nazionalita" th:field="*{nazionalita}" required />
+            <span class="error" th:if="${#fields.hasErrors('nazionalita')}" th:errors="*{nazionalita}"></span>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Salva attore</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

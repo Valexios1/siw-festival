@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Pannello amministratore</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Pannello amministratore</h1>
+
+    <p th:if="${userDetails != null}">
+        Sei connesso come <strong th:text="${userDetails.username}">admin</strong>.
+    </p>
+
+    <div class="griglia-card">
+        <div class="card">
+            <h2>Festival</h2>
+            <p>Crea e modifica i festival e scegli i film che vi partecipano.</p>
+            <a class="btn" th:href="@{/festival}">Vedi i festival</a>
+            <a class="btn" th:href="@{/admin/festival/nuovo}">Nuovo festival</a>
+        </div>
+
+        <div class="card">
+            <h2>Film</h2>
+            <p>Consulta il catalogo, inserisci nuovi film e gestisci il cast.</p>
+            <a class="btn" th:href="@{/film}">Vedi i film</a>
+            <a class="btn" th:href="@{/admin/film/nuovo}">Nuovo film</a>
+        </div>
+
+        <div class="card">
+            <h2>Attori</h2>
+            <p>Anagrafica degli attori, da associare ai film con il personaggio interpretato.</p>
+            <a class="btn" th:href="@{/admin/attori}">Vedi gli attori</a>
+            <a class="btn" th:href="@{/admin/attore/nuovo}">Nuovo attore</a>
+        </div>
+
+        <div class="card">
+            <h2>Sale</h2>
+            <p>Sale cinematografiche che ospitano le proiezioni.</p>
+            <a class="btn" th:href="@{/admin/sale}">Vedi le sale</a>
+            <a class="btn" th:href="@{/admin/sala/nuova}">Nuova sala</a>
+        </div>
+
+        <div class="card">
+            <h2>Proiezioni</h2>
+            <p>Programma, modifica e cancella le proiezioni dei festival.</p>
+            <a class="btn" th:href="@{/proiezioni}">Vedi il programma</a>
+            <a class="btn" th:href="@{/admin/proiezione/nuova}">Programma proiezione</a>
+        </div>
+
+        <div class="card">
+            <h2>Recensioni</h2>
+            <p>Consulta e modera le recensioni scritte dagli utenti registrati.</p>
+            <a class="btn" th:href="@{/admin/recensioni}">Gestisci recensioni</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

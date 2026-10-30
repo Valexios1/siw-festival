@@ -1,0 +1,573 @@
+/*
+ * stile.css
+ * Caricata da tutte le pagine. Contiene variabili, layout, header/footer,
+ * bottoni, form, messaggi e card/griglie.
+ */
+
+:root {
+    --primario: #9b1b30;
+    --primario-scuro: #6f1222;
+    --primario-chiaro: #f7e4e4;
+    --oro: #b8892f;
+    --crema: #faf6f0;
+    --card: #fffdfa;
+    --sabbia: #e6dccc;
+    --testo: #3b3230;
+    --testo-tenue: #857670;
+    --successo: #4f7a4a;
+    --successo-sfondo: #e8f0e2;
+    --errore: #b23a2e;
+    --errore-sfondo: #f8e0dc;
+    --ombra: 0 2px 10px rgba(59, 50, 48, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--crema);
+    color: var(--testo);
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+h1, h2, h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--primario-scuro);
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    margin-top: 2rem;
+    border-bottom: 2px solid var(--sabbia);
+    padding-bottom: 0.3rem;
+}
+
+a {
+    color: var(--primario);
+}
+
+/* ------------------------------------------------------------------
+ * Intestazione e navigazione
+ * ------------------------------------------------------------------ */
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--card);
+    border-bottom: 3px solid var(--primario);
+    box-shadow: var(--ombra);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo a {
+    text-decoration: none;
+}
+
+.brand-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--primario);
+    letter-spacing: 0.02em;
+}
+
+header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    flex: 1;
+}
+
+header nav a {
+    color: var(--testo);
+    text-decoration: none;
+    font-weight: 600;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+}
+
+header nav a:hover {
+    color: var(--primario);
+    border-bottom-color: var(--oro);
+}
+
+.utente {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--testo-tenue);
+}
+
+.logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.logout-btn {
+    background: none;
+    border: 1px solid var(--primario);
+    color: var(--primario);
+    border-radius: 6px;
+    padding: 0.25rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+    background-color: var(--primario);
+    color: #fff;
+}
+
+/* ------------------------------------------------------------------
+ * Contenuto
+ * ------------------------------------------------------------------ */
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* ------------------------------------------------------------------
+ * Griglie e card (riusate da festival, film, recensioni, pannello admin)
+ * ------------------------------------------------------------------ */
+
+.griglia-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background-color: var(--card);
+    border-radius: 10px;
+    border-top: 4px solid var(--primario);
+    box-shadow: var(--ombra);
+    padding: 1.1rem 1.2rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(59, 50, 48, 0.14);
+}
+
+.card h2, .card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.card p {
+    margin: 0;
+    color: var(--testo-tenue);
+    font-size: 0.95rem;
+}
+
+.card .btn {
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+.lista-info {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lista-info li {
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed var(--sabbia);
+    font-size: 0.95rem;
+}
+
+.lista-info li:last-child {
+    border-bottom: none;
+}
+
+.lista-info strong {
+    color: var(--testo-tenue);
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------------
+ * Bottoni
+ * ------------------------------------------------------------------ */
+
+.btn {
+    display: inline-block;
+    background-color: var(--primario);
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: var(--primario-scuro);
+}
+
+.btn-large {
+    padding: 0.7rem 1.4rem;
+    font-size: 1.05rem;
+}
+
+.btn-back {
+    display: inline-block;
+    color: var(--primario);
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.btn-back:hover {
+    text-decoration: underline;
+}
+
+.btn-danger {
+    background-color: var(--errore);
+}
+
+.btn-danger:hover {
+    background-color: #8f2b21;
+}
+
+.inline-form {
+    display: inline;
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------
+ * Pagine di dettaglio
+ * ------------------------------------------------------------------ */
+
+.dettaglio {
+    background-color: var(--card);
+    border-radius: 12px;
+    border-top: 5px solid var(--primario);
+    box-shadow: var(--ombra);
+    padding: 1.5rem;
+}
+
+.dettaglio-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.dettaglio-blocco {
+    background-color: var(--crema);
+    border-left: 4px solid var(--sabbia);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+}
+
+.dettaglio-blocco h3 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1rem;
+}
+
+.dettaglio-blocco ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.95rem;
+}
+
+.dettaglio-blocco li {
+    padding: 0.15rem 0;
+}
+
+.stato {
+    display: inline-block;
+    background-color: var(--primario-chiaro);
+    color: var(--primario-scuro);
+    border-radius: 999px;
+    padding: 0.15rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------------
+ * Tabelle (programma delle proiezioni)
+ * ------------------------------------------------------------------ */
+
+.tabella {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--ombra);
+    margin-top: 1rem;
+}
+
+.tabella th,
+.tabella td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--sabbia);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.tabella th {
+    background-color: var(--primario-chiaro);
+    color: var(--primario-scuro);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tabella tr:last-child td {
+    border-bottom: none;
+}
+
+.badge-stato {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.stato-PROGRAMMATA {
+    background-color: #e3efe0;
+    color: #3d6b38;
+}
+
+.stato-COMPLETATA {
+    background-color: #eceae4;
+    color: #6b6355;
+}
+
+.stato-ANNULLATA {
+    background-color: var(--errore-sfondo);
+    color: var(--errore);
+}
+
+/* ------------------------------------------------------------------
+ * Form
+ * ------------------------------------------------------------------ */
+
+.form-standard {
+    background-color: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--ombra);
+    padding: 1.5rem;
+    max-width: 620px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--sabbia);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background-color: #fff;
+    color: var(--testo);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primario);
+    box-shadow: 0 0 0 3px var(--primario-chiaro);
+}
+
+.form-group small {
+    color: var(--testo-tenue);
+    font-size: 0.85rem;
+}
+
+.form-azioni {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.error {
+    color: var(--errore);
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+}
+
+.error-msg {
+    background-color: var(--errore-sfondo);
+    color: var(--errore);
+    border-left: 4px solid var(--errore);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.success-msg {
+    background-color: var(--successo-sfondo);
+    color: var(--successo);
+    border-left: 4px solid var(--successo);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ------------------------------------------------------------------
+ * Recensioni
+ * ------------------------------------------------------------------ */
+
+.recensioni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.recensione {
+    background-color: var(--card);
+    border-radius: 10px;
+    box-shadow: var(--ombra);
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.recensione-testo {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.recensione-autore {
+    margin: 0;
+    color: var(--testo-tenue);
+    font-size: 0.85rem;
+}
+
+.stelle {
+    color: var(--oro);
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+}
+
+.stelle .vuota {
+    color: var(--sabbia);
+}
+
+.valutazione-stelle {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.2rem;
+    font-size: 1.8rem;
+}
+
+.valutazione-stelle input {
+    display: none;
+}
+
+.valutazione-stelle label {
+    color: var(--sabbia);
+    cursor: pointer;
+    transition: color 0.12s ease;
+}
+
+.valutazione-stelle label:hover,
+.valutazione-stelle label:hover ~ label,
+.valutazione-stelle input:checked ~ label {
+    color: var(--oro);
+}
+
+/* ------------------------------------------------------------------
+ * Piè di pagina
+ * ------------------------------------------------------------------ */
+
+.footer-contatti {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--testo-tenue);
+}
+
+.footer-nome {
+    font-weight: 600;
+    margin: 0;
+    color: var(--primario-scuro);
+}
+
+footer {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background-color: var(--card);
+    border-top: 3px solid var(--sabbia);
+    text-align: left;
+}
+
+footer > p {
+    max-width: 1100px;
+    margin: 0.6rem auto 0;
+    font-size: 0.85rem;
+    color: var(--testo-tenue);
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+}

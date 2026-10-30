@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Recensione</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/film/{id}(id=${recensione.film.id})}">&larr; Torna al film</a>
+
+    <!-- Lo stesso template serve sia all'inserimento sia alla modifica -->
+    <h1 th:text="${recensione.id == null ? 'Scrivi una recensione' : 'Modifica la tua recensione'}">
+        Scrivi una recensione
+    </h1>
+
+    <p class="recensione-autore">
+        Film: <strong th:text="${recensione.film.titolo}">Titolo</strong>
+    </p>
+
+    <form th:action="${recensione.id == null}
+                        ? @{/film/{filmId}/recensioni/nuova(filmId=${recensione.film.id})}
+                        : @{/recensioni/{id}/modifica(id=${recensione.id})}"
+          th:object="${recensione}" method="post" class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label>Voto</label>
+            <div class="valutazione-stelle">
+                <input type="radio" id="stella5" name="voto" value="5" th:checked="${recensione.voto != null and recensione.voto == 5}" />
+                <label for="stella5">&#9733;</label>
+
+                <input type="radio" id="stella4" name="voto" value="4" th:checked="${recensione.voto != null and recensione.voto == 4}" />
+                <label for="stella4">&#9733;</label>
+
+                <input type="radio" id="stella3" name="voto" value="3" th:checked="${recensione.voto != null and recensione.voto == 3}" />
+                <label for="stella3">&#9733;</label>
+
+                <input type="radio" id="stella2" name="voto" value="2" th:checked="${recensione.voto != null and recensione.voto == 2}" />
+                <label for="stella2">&#9733;</label>
+
+                <input type="radio" id="stella1" name="voto" value="1" th:checked="${recensione.voto != null and recensione.voto == 1}" />
+                <label for="stella1">&#9733;</label>
+            </div>
+            <span class="error" th:if="${#fields.hasErrors('voto')}" th:errors="*{voto}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="testo">Recensione</label>
+            <textarea id="testo" rows="5" th:field="*{testo}" required></textarea>
+            <span class="error" th:if="${#fields.hasErrors('testo')}" th:errors="*{testo}"></span>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn" th:text="${recensione.id == null ? 'Pubblica recensione' : 'Salva modifiche'}">
+                Pubblica recensione
+            </button>
+        </div>
+    </form>
+
+    <!-- Eliminazione: disponibile solo quando si sta modificando una recensione esistente -->
+    <form th:if="${recensione.id != null}"
+          th:action="@{/recensioni/{id}/elimina(id=${recensione.id})}" method="post"
+          onsubmit="return confirm('Eliminare questa recensione?');">
+        <input type="hidden" name="filmId" th:value="${recensione.film.id}" />
+        <button type="submit" class="btn btn-danger">Elimina recensione</button>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

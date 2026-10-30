@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'Siw Festival - Film di ' + ${festival.nome}">Associazione film</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/festival/{id}(id=${festival.id})}">&larr; Torna al festival</a>
+
+    <h1 th:text="'Film del festival: ' + ${festival.nome}">Film del festival</h1>
+
+    <p>
+        La selezione inviata sostituisce quella corrente: i film selezionati partecipano
+        al festival, quelli non selezionati ne vengono rimossi.
+    </p>
+
+    <form th:action="@{/admin/festival/{id}/film(id=${festival.id})}" method="post" class="form-standard">
+        <div class="form-group">
+            <label for="filmIds">Film</label>
+            <select id="filmIds" name="filmIds" multiple size="12">
+                <option th:each="f : ${film}"
+                        th:value="${f.id}"
+                        th:selected="${filmSelezionatiIds.contains(f.id)}"
+                        th:text="${f.titolo + ' (' + f.anno + ', ' + f.regista + ')'}">Titolo</option>
+            </select>
+            <small>Usa Ctrl (o Cmd) per selezionare più film. Nessuna selezione = nessun film associato.</small>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Salva associazione</button>
+        </div>
+    </form>
+
+    <p th:if="${#lists.isEmpty(film)}">
+        Non ci sono film da associare.
+        <a th:href="@{/admin/film/nuovo}">Inserisci un nuovo film</a>
+    </p>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

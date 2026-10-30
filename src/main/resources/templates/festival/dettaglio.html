@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'Siw Festival - ' + ${festival.nome}">Dettaglio festival</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/festival}">&larr; Torna ai festival</a>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <div class="dettaglio">
+        <h1 th:text="${festival.nome}">Nome festival</h1>
+
+        <div class="dettaglio-info">
+            <div class="dettaglio-blocco">
+                <h3>Informazioni</h3>
+                <ul>
+                    <li>
+                        <strong>Anno:</strong>
+                        <span th:text="${festival.anno}">2026</span>
+                    </li>
+                    <li>
+                        <strong>Città:</strong>
+                        <span th:text="${festival.citta}">Roma</span>
+                    </li>
+                    <li>
+                        <strong>Dal:</strong>
+                        <span th:text="${festival.dataInizio != null ? #temporals.format(festival.dataInizio, 'dd/MM/yyyy') : 'n/d'}">01/11/2026</span>
+                        <strong>al:</strong>
+                        <span th:text="${festival.dataFine != null ? #temporals.format(festival.dataFine, 'dd/MM/yyyy') : 'n/d'}">10/11/2026</span>
+                    </li>
+                    <li>
+                        <strong>Film in programma:</strong>
+                        <span th:text="${festival.film != null ? #lists.size(festival.film) : 0}">0</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="dettaglio-blocco">
+                <h3>Descrizione</h3>
+                <p th:text="${festival.descrizione}">Descrizione del festival</p>
+            </div>
+        </div>
+
+        <!-- Comandi di gestione: visibili solo all'amministratore -->
+        <th:block th:if="${isAdmin}">
+            <h3>Gestione</h3>
+            <div class="form-azioni">
+                <a class="btn" th:href="@{/admin/festival/{id}/modifica(id=${festival.id})}">Modifica festival</a>
+                <a class="btn" th:href="@{/admin/festival/{id}/film(id=${festival.id})}">Gestisci film del festival</a>
+            </div>
+        </th:block>
+    </div>
+
+    <h2>Film partecipanti</h2>
+    <p th:if="${festival.film == null or #lists.isEmpty(festival.film)}">
+        Nessun film associato a questo festival.
+    </p>
+    <div class="griglia-card" th:if="${festival.film != null and not #lists.isEmpty(festival.film)}">
+        <div class="card" th:each="f : ${festival.film}">
+            <h3 th:text="${f.titolo}">Titolo</h3>
+            <ul class="lista-info">
+                <li>
+                    <strong>Anno:</strong>
+                    <span th:text="${f.anno}">1972</span>
+                </li>
+                <li>
+                    <strong>Regista:</strong>
+                    <span th:text="${f.regista}">Regista</span>
+                </li>
+                <li>
+                    <strong>Genere:</strong>
+                    <span th:text="${f.genere}">DRAMMATICO</span>
+                </li>
+            </ul>
+            <a class="btn" th:href="@{/film/{id}(id=${f.id})}">Dettaglio</a>
+        </div>
+    </div>
+
+    <h2>Programma delle proiezioni</h2>
+    <p th:if="${#lists.isEmpty(proiezioni)}">Nessuna proiezione programmata per questo festival.</p>
+    <table class="tabella" th:unless="${#lists.isEmpty(proiezioni)}">
+        <thead>
+        <tr>
+            <th>Data e ora</th>
+            <th>Film</th>
+            <th>Sala</th>
+            <th>Stato</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${proiezioni}">
+            <td th:text="${p.dataOra != null ? #temporals.format(p.dataOra, 'dd/MM/yyyy HH:mm') : 'n/d'}">01/11/2026 20:30</td>
+            <td>
+                <a th:href="@{/film/{id}(id=${p.film.id})}" th:text="${p.film.titolo}">Titolo</a>
+            </td>
+            <td th:text="${p.sala.nome}">Sala</td>
+            <td>
+                <span class="badge-stato" th:classappend="'stato-' + ${p.stato}" th:text="${p.stato}">PROGRAMMATA</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

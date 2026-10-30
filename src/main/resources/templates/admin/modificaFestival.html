@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Modifica festival</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/festival/{id}(id=${festival.id})}">&larr; Torna al festival</a>
+
+    <h1 th:text="'Modifica festival: ' + ${festival.nome}">Modifica festival</h1>
+
+    <form th:action="@{/admin/festival/{id}/modifica(id=${festival.id})}" th:object="${festival}"
+          method="post" class="form-standard">
+
+        <div class="error-msg" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Errore</p>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" th:field="*{nome}" required />
+            <span class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="anno">Anno</label>
+            <input type="number" id="anno" th:field="*{anno}" min="1900" max="2100" required />
+            <span class="error" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="citta">Città</label>
+            <input type="text" id="citta" th:field="*{citta}" required />
+            <span class="error" th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dataInizio">Data di inizio</label>
+            <input type="date" id="dataInizio" th:field="*{dataInizio}" required />
+            <span class="error" th:if="${#fields.hasErrors('dataInizio')}" th:errors="*{dataInizio}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dataFine">Data di fine</label>
+            <input type="date" id="dataFine" th:field="*{dataFine}" required />
+            <span class="error" th:if="${#fields.hasErrors('dataFine')}" th:errors="*{dataFine}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="descrizione">Descrizione</label>
+            <textarea id="descrizione" rows="4" th:field="*{descrizione}" required></textarea>
+            <span class="error" th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}"></span>
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Salva modifiche</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

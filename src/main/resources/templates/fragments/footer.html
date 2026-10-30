@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Siw Festival</title>
+</head>
+<body>
+<!--
+  Frammento di piè di pagina, incluso da tutte le pagine con
+  <div th:replace="~{fragments/footer :: footer}"></div>
+-->
+<footer th:fragment="footer">
+    <div class="footer-contatti">
+        <p class="footer-nome">Siw Festival &middot; rassegna di cinema</p>
+        <span>Via del Cinema 1, 00100 Roma (RM)</span>
+        <span>&middot; Tel: +39 06 1234567</span>
+        <span>&middot; <a href="mailto:info@siwfestival.it">info@siwfestival.it</a></span>
+    </div>
+    <p>&copy; 2026 Siw Festival</p>
+</footer>
+</body>
+</html>

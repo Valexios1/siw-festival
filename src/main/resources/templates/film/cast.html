@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'Siw Festival - Cast di ' + ${film.titolo}">Gestione cast</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/film/{id}(id=${film.id})}">&larr; Torna al film</a>
+
+    <h1 th:text="'Cast di ' + ${film.titolo}">Cast</h1>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <p th:if="${#lists.isEmpty(cast)}">Il film non ha ancora attori nel cast.</p>
+    <table class="tabella" th:unless="${#lists.isEmpty(cast)}">
+        <thead>
+        <tr>
+            <th>Attore</th>
+            <th>Nazionalità</th>
+            <th>Personaggio</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${cast}">
+            <td th:text="${i.attore.cognome + ' ' + i.attore.nome}">Cognome Nome</td>
+            <td th:text="${i.attore.nazionalita}">Italiana</td>
+            <td th:text="${i.personaggio}">Personaggio</td>
+            <td>
+                <form th:action="@{/admin/film/{filmId}/cast/{id}/elimina(filmId=${film.id}, id=${i.id})}"
+                      method="post" class="inline-form"
+                      onsubmit="return confirm('Rimuovere questo attore dal cast?');">
+                    <button type="submit" class="btn btn-danger">Rimuovi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Aggiungi un attore al cast</h2>
+
+    <p th:if="${#lists.isEmpty(attori)}">
+        Non ci sono attori in archivio.
+        <a th:href="@{/admin/attore/nuovo}">Inserisci un nuovo attore</a>
+    </p>
+
+    <form th:action="@{/admin/film/{id}/cast(id=${film.id})}" method="post" class="form-standard"
+          th:unless="${#lists.isEmpty(attori)}">
+        <div class="form-group">
+            <label for="attoreId">Attore</label>
+            <select id="attoreId" name="attoreId" required>
+                <option value="">-- Seleziona un attore --</option>
+                <option th:each="a : ${attori}"
+                        th:value="${a.id}"
+                        th:text="${a.cognome + ' ' + a.nome + ' (' + a.nazionalita + ')'}">Attore</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="personaggio">Personaggio interpretato</label>
+            <input type="text" id="personaggio" name="personaggio" placeholder="es. Don Vito Corleone" required />
+        </div>
+
+        <div class="form-azioni">
+            <button type="submit" class="btn">Aggiungi al cast</button>
+        </div>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

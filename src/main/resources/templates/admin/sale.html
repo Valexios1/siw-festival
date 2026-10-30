@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Sale</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <a class="btn-back" th:href="@{/admin}">&larr; Torna al pannello admin</a>
+
+    <h1>Sale</h1>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <p>
+        <a class="btn" th:href="@{/admin/sala/nuova}">Nuova sala</a>
+    </p>
+
+    <p th:if="${#lists.isEmpty(sale)}">Nessuna sala in archivio.</p>
+
+    <table class="tabella" th:unless="${#lists.isEmpty(sale)}">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Indirizzo</th>
+            <th>Capienza</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${sale}">
+            <td th:text="${s.nome}">Sala 1</td>
+            <td th:text="${s.indirizzo}">Via del Cinema 1, Roma</td>
+            <td th:text="${s.capienza}">300</td>
+            <td>
+                <a class="btn" th:href="@{/admin/sala/{id}/modifica(id=${s.id})}">Modifica</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
