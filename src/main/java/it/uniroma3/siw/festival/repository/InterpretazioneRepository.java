@@ -2,13 +2,13 @@ package it.uniroma3.siw.festival.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import it.uniroma3.siw.festival.model.Interpretazione;
 
-public interface InterpretazioneRepository extends CrudRepository<Interpretazione, Long> {
+public interface InterpretazioneRepository extends JpaRepository<Interpretazione, Long> {
 
     List<Interpretazione> findByFilmId(Long filmId);
 

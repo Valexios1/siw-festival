@@ -15,7 +15,9 @@ public class CredentialService {
     private CredentialRepository credentialRepository;
 
     public Credentials getCredentials(Long id){
-        return credentialRepository.findById(id).get();
+        // getReferenceById e' il metodo previsto da JpaRepository al posto di findById(id).get():
+        // restituisce un riferimento all'entita' senza caricarla finche' non viene usata.
+        return credentialRepository.getReferenceById(id);
     }
 
     public Credentials getCredentials(String username){

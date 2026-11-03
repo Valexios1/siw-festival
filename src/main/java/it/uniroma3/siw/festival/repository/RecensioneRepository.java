@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.uniroma3.siw.festival.model.Recensione;
 
-public interface RecensioneRepository extends CrudRepository<Recensione, Long> {
+public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
 
     /*
      * Recensioni di un film, dalla piu' recente: popolano il dettaglio film,

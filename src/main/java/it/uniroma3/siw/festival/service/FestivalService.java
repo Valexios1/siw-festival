@@ -80,7 +80,8 @@ public class FestivalService {
         Festival festival = findById(festivalId);
 
         if (filmIds != null && !filmIds.isEmpty()) {
-            List<Film> film = (List<Film>) filmRepository.findAllById(filmIds);
+            // JpaRepository.findAllById restituisce direttamente una List
+            List<Film> film = filmRepository.findAllById(filmIds);
 
             // Verifica che tutti gli id richiesti siano stati trovati
             if (film.size() != filmIds.size()) {

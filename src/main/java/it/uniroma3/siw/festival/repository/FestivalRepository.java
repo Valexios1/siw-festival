@@ -3,13 +3,13 @@ package it.uniroma3.siw.festival.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import it.uniroma3.siw.festival.model.Festival;
 
-public interface FestivalRepository extends CrudRepository<Festival, Long> {
+public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
     /*
      * Elenco dei festival, dal piu' recente al piu' vecchio: e' l'ordine con cui

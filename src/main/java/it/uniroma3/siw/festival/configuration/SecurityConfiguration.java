@@ -42,17 +42,12 @@ public class SecurityConfiguration {
     protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            // Pagine pubbliche: elenco e dettaglio di festival, film e programma delle proiezioni.
-            // "/error" deve restare accessibile, altrimenti la pagina di errore verrebbe
-            // reindirizzata al login invece di essere mostrata.
             authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/register", "/css/**",
                     "/festival", "/festival/**", "/film", "/film/**", "/proiezioni", "/favicon.ico",
                     "/error").permitAll();
             authorize.requestMatchers(HttpMethod.POST, "/register", "/login", "/error").permitAll();
-            // Tutte le funzionalita' di gestione sono riservate all'amministratore.
             authorize.requestMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
             authorize.requestMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
-            // Il resto (recensioni, area personale) richiede un utente autenticato.
             authorize.anyRequest().authenticated();
         });
 
