@@ -3,9 +3,8 @@ package it.uniroma3.siw.festival.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import it.uniroma3.siw.festival.model.Festival;
 
@@ -18,10 +17,15 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findAllByOrderByAnnoDesc();
 
     /*
-     * Festival con i film partecipanti caricati in una sola query (JOIN FETCH).
-     * Serve al dettaglio festival: senza il fetch, iterare i film in pagina
-     * genererebbe una query per ogni festival/collezione (problema N+1).
+     * Il festival si carica sempre insieme ai film partecipanti: la findById e' usata
+     * dal dettaglio pubblico, dalla pagina di associazione dei film e dalla modifica,
+     * e la collezione e' piccola.
+     *
+     * L'EntityGraph sostituisce il "left join fetch" che era scritto in JPQL: i film
+     * arrivano con la stessa query del festival, senza una query per ogni film
+     * mostrato in pagina (problema N+1).
      */
-    @Query("select distinct f from Festival f left join fetch f.film where f.id = :id")
-    Optional<Festival> findByIdConFilm(@Param("id") Long id);
+    @Override
+    @EntityGraph(attributePaths = { "film" })
+    Optional<Festival> findById(Long id);
 }

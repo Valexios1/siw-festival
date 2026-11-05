@@ -32,20 +32,16 @@ public class FilmService {
         return filmRepository.findAllByOrderByTitoloAsc();
     }
 
+    /*
+     * Dettaglio film: i festival ai quali il film partecipa arrivano con la stessa
+     * query del film (EntityGraph dichiarato su FilmRepository.findById).
+     * Il cast e' una seconda collezione e viene caricato da una query separata
+     * (vedi getCast), perche' Hibernate non consente il fetch di due "bag" nella
+     * stessa query.
+     */
     @Transactional(readOnly = true)
     public Film findById(Long id) {
         return filmRepository.findById(id).orElseThrow(() -> new FilmNotFoundException(id));
-    }
-
-    /*
-     * Dettaglio film: i festival ai quali il film partecipa vengono caricati con la
-     * stessa query del film. Il cast e' una seconda collezione e viene caricato da
-     * una query separata (vedi getCast), perche' Hibernate non consente il fetch
-     * di due "bag" nella stessa query.
-     */
-    @Transactional(readOnly = true)
-    public Film findByIdConFestival(Long id) {
-        return filmRepository.findByIdConFestival(id).orElseThrow(() -> new FilmNotFoundException(id));
     }
 
     /*
@@ -54,7 +50,7 @@ public class FilmService {
      */
     @Transactional(readOnly = true)
     public List<Interpretazione> getCast(Long filmId) {
-        return interpretazioneRepository.findByFilmIdConAttore(filmId);
+        return interpretazioneRepository.findByFilmIdOrderByAttoreCognomeAscAttoreNomeAsc(filmId);
     }
 
     @Transactional

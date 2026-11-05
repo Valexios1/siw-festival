@@ -50,7 +50,7 @@ public class ProiezioneService {
 
     /*
      * Programma di un festival con film e sala gia' caricati (JOIN FETCH):
-     * e' la strategia usata dal dettaglio festival, dove ogni riga mostra
+     * e' la query usata dal dettaglio festival, dove ogni riga mostra
      * film e sala.
      */
     @Transactional(readOnly = true)
@@ -61,26 +61,6 @@ public class ProiezioneService {
     @Transactional(readOnly = true)
     public List<Proiezione> findByFilm(Long filmId) {
         return proiezioneRepository.findByFilmIdOrderByDataOraAsc(filmId);
-    }
-
-    /*
-     * Variante senza fetch: film e sala restano associazioni LAZY.
-     * E' la strategia di riferimento per l'analisi sperimentale dell'accesso
-     * ai dati (PrestazioniAccessoDatiTest).
-     */
-    @Transactional(readOnly = true)
-    public List<Proiezione> findByFestivalSenzaFetch(Long festivalId) {
-        return proiezioneRepository.findByFestivalIdOrderByDataOraAsc(festivalId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Proiezione> findByFestivalConEntityGraph(Long festivalId) {
-        return proiezioneRepository.findByFestivalIdConEntityGraph(festivalId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Proiezione> findByFestivalConJoinFetch(Long festivalId) {
-        return proiezioneRepository.findByFestivalIdConFilmESala(festivalId);
     }
 
     /**

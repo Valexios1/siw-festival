@@ -48,7 +48,7 @@ public class FestivalController {
      */
     @GetMapping("/festival/{id}")
     public String getFestival(@PathVariable Long id, Model model) {
-        model.addAttribute("festival", festivalService.findByIdConFilm(id));
+        model.addAttribute("festival", festivalService.findById(id));
         model.addAttribute("proiezioni", proiezioneService.findByFestival(id));
         return "festival/dettaglio";
     }
@@ -106,7 +106,7 @@ public class FestivalController {
      */
     @GetMapping("/admin/festival/{id}/film")
     public String showAssociaFilmForm(@PathVariable Long id, Model model) {
-        Festival festival = festivalService.findByIdConFilm(id);
+        Festival festival = festivalService.findById(id);
         model.addAttribute("festival", festival);
         model.addAttribute("film", filmService.findAll());
         model.addAttribute("filmSelezionatiIds",

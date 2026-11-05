@@ -58,7 +58,7 @@ public class FilmController {
      */
     @GetMapping("/film/{id}")
     public String getFilm(@PathVariable Long id, Model model) {
-        Film film = filmService.findByIdConFestival(id);
+        Film film = filmService.findById(id);
         model.addAttribute("film", film);
         model.addAttribute("cast", filmService.getCast(id));
         model.addAttribute("proiezioni", proiezioneService.findByFilm(id));

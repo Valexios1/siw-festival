@@ -32,6 +32,8 @@ public class Interpretazione {
     @Column(nullable = false)
     private String personaggio;
 
+
+
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

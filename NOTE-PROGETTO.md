@@ -34,36 +34,26 @@ le collezioni lo sono per default) e **fetch mirati** nei casi d'uso che mostran
 | Associazione | Strategia | Motivazione |
 |---|---|---|
 | `Proiezione.film`, `Proiezione.sala`, `Proiezione.festival` | LAZY + `@EntityGraph` nelle query del programma | Il programma è l'elenco più frequentato: un `EntityGraph` su `{film, sala, festival}` evita una query per riga (N+1), ma la stessa associazione resta LAZY quando la proiezione viene caricata per altri motivi (es. controllo di disponibilità) |
-| `Festival.film` | LAZY + `left join fetch` in `findByIdConFilm` | Il dettaglio festival mostra i film partecipanti: un solo fetch evita una query per film. La collezione resta LAZY nell'elenco dei festival, dove i film non servono |
-| `Film.festival` / `Film.cast` | LAZY + due query distinte (`findByIdConFestival`, `findByFilmIdConAttore`) | Il dettaglio film mostra entrambe le collezioni, ma Hibernate **non consente il fetch di due "bag" nella stessa query** (`MultipleBagFetchException`): la seconda collezione viene inizializzata con una query separata |
+| `Festival.film` | LAZY + `@EntityGraph` sulla `findById` | Il festival si carica sempre con i film partecipanti (dettaglio, associazione dei film, modifica): il grafo evita una query per film. La collezione resta LAZY nell'elenco dei festival, dove i film non servono |
+| `Film.festival` / `Film.cast` | LAZY + `@EntityGraph` sulla `findById` (`festival`) e `join fetch` nella query del cast | Il dettaglio film mostra entrambe le collezioni, ma Hibernate **non consente il fetch di due "bag" nella stessa query** (`MultipleBagFetchException`): le due collezioni viaggiano su due query |
 | `Recensione.utente`, `Recensione.film` | LAZY + `@EntityGraph` | Le recensioni sono mostrate insieme all'autore (e al film) nella home, nel dettaglio film, in area personale e nella moderazione |
-| `Interpretazione.attore` | LAZY + `join fetch` | Il cast è sempre mostrato con il nome dell'attore |
+| `Interpretazione.attore` | LAZY + `join fetch` nella query del cast | Il cast è sempre mostrato con il nome dell'attore |
 
 Nessuna associazione è mappata EAGER: il caricamento anticipato viene richiesto caso per caso
-sulla query, che è la scelta più controllabile (l'EAGER globale tende a propagarsi su tutte le query
-e ad appesantire operazioni che non ne hanno bisogno).
+sul repository, tramite `@EntityGraph`, che è la scelta più controllabile (l'EAGER globale tende a
+propagarsi su tutte le query e ad appesantire operazioni che non ne hanno bisogno).
+
+Le strategie di fetch sono quindi espresse quasi interamente con `@EntityGraph`. Restano in JPQL due
+`join fetch`: `ProiezioneRepository.findByFestivalIdConFilmESala` (programma del festival con film e
+sala) e `InterpretazioneRepository.findByFilmIdOrderByAttoreCognomeAscAttoreNomeAsc` (cast con attori).
 
 ### Analisi sperimentale (sezione 8.2)
 
-`src/test/java/it/uniroma3/siw/festival/PrestazioniAccessoDatiTest.java` esegue lo stesso caso d'uso
-(**programma di un festival con film e sale**) con tre strategie, stampando numero di query SQL,
-entità caricate e tempo:
-
-```bash
-mvnw test -Dtest=PrestazioniAccessoDatiTest
-```
-
-1. **LAZY**: `findByFestivalIdOrderByDataOraAsc`; film e sala vengono inizializzati al primo accesso
-   → 1 query per il programma + 1 per ogni film + 1 per ogni sala (N+1).
-2. **JOIN FETCH**: `findByFestivalIdConFilmESala`, due `join fetch` nella stessa query → 1 query.
-3. **@EntityGraph**: `findByFestivalIdOrderByDataOraAscConFilmESala`, stessa ottimizzazione dichiarata
-   sul repository con `@EntityGraph(attributePaths = {"film", "sala"})` → 1 query.
-
-Il test usa `hibernate.generate_statistics=true` (abilitato solo in quel test) e
-`TransactionTemplate`: ogni strategia gira in una transazione dedicata, quindi con un persistence
-context nuovo e senza riuso della first-level cache. Il database viene ricreato e ripopolato
-all'avvio del contesto (`ddl-auto=create` + `import.sql`), quindi il confronto avviene sempre
-sullo stesso insieme di dati.
+**Non ancora inclusa**: lo script che confronta due o più strategie di accesso agli stessi dati
+(numero di query SQL, tempo di esecuzione, entità caricate) sarà aggiunto in un secondo momento,
+insieme alle varianti di query che servono al confronto (accesso LAZY, `join fetch`, `@EntityGraph`).
+Il modello e le associazioni sono già predisposti: le varianti si possono aggiungere sul repository
+senza toccare il resto dell'applicazione.
 
 ## 3. Gestione delle transazioni
 

@@ -32,18 +32,14 @@ public class FestivalService {
         return festivalRepository.findAllByOrderByAnnoDesc();
     }
 
+    /*
+     * Il festival viene caricato insieme ai film partecipanti (EntityGraph dichiarato
+     * su FestivalRepository.findById): il dettaglio mostra i film e non serve quindi
+     * una query per ognuno di essi.
+     */
     @Transactional(readOnly = true)
     public Festival findById(Long id) {
         return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
-    }
-
-    /*
-     * Dettaglio festival: i film partecipanti vengono caricati con la stessa query
-     * (JOIN FETCH), evitando una query per ogni film della pagina.
-     */
-    @Transactional(readOnly = true)
-    public Festival findByIdConFilm(Long id) {
-        return festivalRepository.findByIdConFilm(id).orElseThrow(() -> new FestivalNotFoundException(id));
     }
 
     @Transactional

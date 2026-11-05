@@ -20,8 +20,6 @@ public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {
     @EntityGraph(attributePaths = { "film", "sala", "festival" })
     List<Proiezione> findAllByOrderByDataOraAsc();
 
-    List<Proiezione> findByFestivalIdOrderByDataOraAsc(Long festivalId);
-
     @EntityGraph(attributePaths = { "sala", "festival" })
     List<Proiezione> findByFilmIdOrderByDataOraAsc(Long filmId);
 
@@ -33,40 +31,19 @@ public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {
      */
     List<Proiezione> findBySalaIdAndDataOraBetweenOrderByDataOraAsc(Long salaId, LocalDateTime inizio, LocalDateTime fine);
 
-    boolean existsBySalaId(Long salaId);
-
-    boolean existsByFilmId(Long filmId);
-
-    boolean existsByFestivalId(Long festivalId);
-
-    // ------------------------------------------------------------------
-    // Varianti usate dall'analisi sperimentale dell'accesso ai dati:
-    // stesso caso d'uso (programma di un festival con film e sale) risolto
-    // con tre strategie di fetch diverse.
-    // ------------------------------------------------------------------
-
     /*
-     * Strategia 1 (LAZY): il programma viene caricato da solo; film e sala restano
-     * proxy e vengono inizializzati uno per uno al primo accesso.
-     */
-    List<Proiezione> findByFestivalId(Long festivalId);
-
-    /*
-     * Strategia 2 (JOIN FETCH): film e sala vengono caricati con la stessa query
-     * del programma, con due join (leciti perche' entrambe le associazioni sono
-     * molti-a-uno, non collezioni).
+     * Programma di un festival con film e sala caricati con la stessa query
+     * (JOIN FETCH): e' la query usata dal dettaglio festival, dove ogni riga mostra
+     * il film e la sala della proiezione. Due join nella stessa query sono leciti
+     * perche' entrambe le associazioni sono molti-a-uno, non collezioni.
      */
     @Query("select p from Proiezione p join fetch p.film join fetch p.sala "
             + "where p.festival.id = :festivalId order by p.dataOra asc")
     List<Proiezione> findByFestivalIdConFilmESala(@Param("festivalId") Long festivalId);
 
-    /*
-     * Strategia 3 (@EntityGraph): come la precedente, ma la strategia di fetch e'
-     * dichiarata fuori dalla query, sull'annotazione @EntityGraph.
-     * La query e' esplicita perche' il nome del metodo contiene "ConEntityGraph",
-     * che non e' un nome di proprieta' e non sarebbe interpretabile come derived query.
-     */
-    @EntityGraph(attributePaths = { "film", "sala" })
-    @Query("select p from Proiezione p where p.festival.id = :festivalId order by p.dataOra asc")
-    List<Proiezione> findByFestivalIdConEntityGraph(@Param("festivalId") Long festivalId);
+    boolean existsBySalaId(Long salaId);
+
+    boolean existsByFilmId(Long filmId);
+
+    boolean existsByFestivalId(Long festivalId);
 }
