@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 
 import javax.sql.DataSource;
 
@@ -44,7 +45,8 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/register", "/css/**", "/js/**",
                     "/festival", "/festival/**", "/film", "/film/**", "/proiezioni",
-                    "/attori", "/attore/**", "/api/film", "/api/film/**", "/favicon.ico", "/error").permitAll();
+                    "/attori", "/attore/**", "/api/film", "/api/film/**", "/favicon.ico",
+                    "/error", "/error/**").permitAll();
             authorize.requestMatchers(HttpMethod.POST, "/register", "/login", "/error").permitAll();
             authorize.requestMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
             authorize.requestMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(ADMIN_ROLE);
@@ -64,6 +66,12 @@ public class SecurityConfiguration {
             logout.deleteCookies("JSESSIONID");
             logout.clearAuthentication(true);
             logout.permitAll();
+        });
+
+        httpSecurity.exceptionHandling(exceptions -> {
+            AccessDeniedHandlerImpl accessDeniedHandler = new AccessDeniedHandlerImpl();
+            accessDeniedHandler.setErrorPage("/error/403");
+            exceptions.accessDeniedHandler(accessDeniedHandler);
         });
 
 

@@ -15,10 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 /**
- * Gestione centralizzata degli errori: le risorse inesistenti producono una
- * pagina 404 con il messaggio dell'eccezione, ogni altro errore una pagina 500.
+ * Gestione centralizzata degli errori: risorse inesistenti (404), richieste
+ * non valide (400), accesso negato (403) e errori interni (500).
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +42,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNoResource(NoResourceFoundException ex) {
         return "error/404";
+    }
+
+    @ExceptionHandler({ IllegalArgumentException.class, MissingServletRequestParameterException.class,
+            MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(Exception ex, Model model) {
+        model.addAttribute("messaggio", ex.getMessage());
+        return "error/400";
     }
 
     @ExceptionHandler(Exception.class)
