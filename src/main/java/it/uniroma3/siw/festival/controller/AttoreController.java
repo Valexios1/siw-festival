@@ -13,17 +13,35 @@ import it.uniroma3.siw.festival.model.Attore;
 import it.uniroma3.siw.festival.service.AttoreService;
 import jakarta.validation.Valid;
 
-/**
- * Gestione degli attori: tutte le funzionalita' sono riservate all'amministratore.
- */
 @Controller
 public class AttoreController {
 
     @Autowired
     private AttoreService attoreService;
 
-    @GetMapping("/admin/attori")
+    // ------------------------------------------------------------------
+    // Funzionalita' pubbliche
+    // ------------------------------------------------------------------
+
+    @GetMapping("/attori")
     public String getAttori(Model model) {
+        model.addAttribute("attori", attoreService.findAll());
+        return "attore/lista";
+    }
+
+    @GetMapping("/attore/{id}")
+    public String getAttore(@PathVariable Long id, Model model) {
+        model.addAttribute("attore", attoreService.findById(id));
+        model.addAttribute("interpretazioni", attoreService.getFilmografia(id));
+        return "attore/dettaglio";
+    }
+
+    // ------------------------------------------------------------------
+    // Funzionalita' riservate all'amministratore
+    // ------------------------------------------------------------------
+
+    @GetMapping("/admin/attori")
+    public String getAttoriAdmin(Model model) {
         model.addAttribute("attori", attoreService.findAll());
         return "admin/attori";
     }

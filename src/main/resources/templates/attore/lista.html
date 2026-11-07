@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siw Festival - Attori</title>
+    <link rel="stylesheet" href="/css/stile.css" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Attori</h1>
+
+    <div class="success-msg" th:if="${successo != null}" th:text="${successo}">Operazione completata</div>
+    <div class="error-msg" th:if="${errore != null}" th:text="${errore}">Errore</div>
+
+    <p th:if="${isAdmin}">
+        <a class="btn" th:href="@{/admin/attore/nuovo}">Nuovo attore</a>
+    </p>
+
+    <p th:if="${#lists.isEmpty(attori)}">Nessun attore in archivio.</p>
+
+    <div class="griglia-card" th:unless="${#lists.isEmpty(attori)}">
+        <div class="card" th:each="a : ${attori}">
+            <h2 th:text="${a.nome + ' ' + a.cognome}">Nome Cognome</h2>
+            <ul class="lista-info">
+                <li>
+                    <strong>Data di nascita:</strong>
+                    <span th:text="${a.dataNascita != null ? #temporals.format(a.dataNascita, 'dd/MM/yyyy') : 'n/d'}">01/01/1924</span>
+                </li>
+                <li>
+                    <strong>Nazionalità:</strong>
+                    <span th:text="${a.nazionalita}">Italiana</span>
+                </li>
+            </ul>
+            <a class="btn" th:href="@{/attore/{id}(id=${a.id})}">Dettaglio</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

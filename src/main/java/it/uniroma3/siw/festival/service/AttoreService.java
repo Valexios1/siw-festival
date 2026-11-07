@@ -8,13 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.siw.festival.exception.AttoreNotFoundException;
 import it.uniroma3.siw.festival.model.Attore;
+import it.uniroma3.siw.festival.model.Interpretazione;
 import it.uniroma3.siw.festival.repository.AttoreRepository;
+import it.uniroma3.siw.festival.repository.InterpretazioneRepository;
 
 @Service
 public class AttoreService {
 
     @Autowired
     private AttoreRepository attoreRepository;
+
+    @Autowired
+    private InterpretazioneRepository interpretazioneRepository;
 
     @Transactional(readOnly = true)
     public List<Attore> findAll() {
@@ -24,6 +29,11 @@ public class AttoreService {
     @Transactional(readOnly = true)
     public Attore findById(Long id) {
         return attoreRepository.findById(id).orElseThrow(() -> new AttoreNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Interpretazione> getFilmografia(Long attoreId) {
+        return interpretazioneRepository.findByAttoreIdOrderByFilmTitoloAsc(attoreId);
     }
 
     @Transactional

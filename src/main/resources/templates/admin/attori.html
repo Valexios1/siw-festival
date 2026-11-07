@@ -41,6 +41,7 @@
             <td th:text="${a.dataNascita != null ? #temporals.format(a.dataNascita, 'dd/MM/yyyy') : 'n/d'}">01/01/1924</td>
             <td th:text="${a.nazionalita}">Italiana</td>
             <td>
+                <a class="btn" th:href="@{/attore/{id}(id=${a.id})}">Dettaglio</a>
                 <a class="btn" th:href="@{/admin/attore/{id}/modifica(id=${a.id})}">Modifica</a>
             </td>
         </tr>
