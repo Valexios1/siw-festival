@@ -62,6 +62,8 @@ public class FilmController {
         model.addAttribute("cast", filmService.getCast(id));
         model.addAttribute("proiezioni", proiezioneService.findByFilm(id));
         model.addAttribute("recensioni", recensioneService.findByFilm(id));
+        model.addAttribute("mediaVoto", recensioneService.mediaVoto(id));
+        model.addAttribute("conteggioRecensioni", recensioneService.conteggio(id));
 
         // Recensione dell'utente collegato per questo film (se ne ha una):
         // abilita i comandi di modifica/eliminazione solo sul proprio contributo.

@@ -20,4 +20,12 @@ public interface InterpretazioneRepository extends JpaRepository<Interpretazione
     List<Interpretazione> findByFilmIdOrderByAttoreCognomeAscAttoreNomeAsc(@Param("filmId") Long filmId);
 
     boolean existsByFilmIdAndAttoreId(Long filmId, Long attoreId);
+
+    /*
+     * Filmografia dell'attore con i film caricati in un'unica query (JOIN FETCH).
+     * Il dettaglio attore mostra il film e il personaggio interpretato.
+     */
+    @Query("select i from Interpretazione i join fetch i.film where i.attore.id = :attoreId "
+            + "order by i.film.titolo asc")
+    List<Interpretazione> findByAttoreIdOrderByFilmTitoloAsc(@Param("attoreId") Long attoreId);
 }

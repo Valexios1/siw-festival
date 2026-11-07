@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.uniroma3.siw.festival.model.Recensione;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
 
@@ -44,4 +46,9 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
      */
     @EntityGraph(attributePaths = { "utente", "film" })
     List<Recensione> findAllByOrderByDataCreazioneDesc();
+
+    @Query("select avg(r.voto) from Recensione r where r.film.id = :filmId")
+    Double mediaVotoByFilmId(@Param("filmId") Long filmId);
+
+    long countByFilmId(Long filmId);
 }

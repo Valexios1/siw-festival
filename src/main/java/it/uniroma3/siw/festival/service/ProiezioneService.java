@@ -160,6 +160,7 @@ public class ProiezioneService {
      *
      * @param idDaEscludere proiezione da ignorare nel controllo (fase di modifica)
      */
+
     private void valida(Proiezione proiezione, Long idDaEscludere) {
         Festival festival = proiezione.getFestival();
         Film film = proiezione.getFilm();

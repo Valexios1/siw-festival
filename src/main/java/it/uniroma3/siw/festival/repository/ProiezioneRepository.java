@@ -46,4 +46,6 @@ public interface ProiezioneRepository extends JpaRepository<Proiezione, Long> {
     boolean existsByFilmId(Long filmId);
 
     boolean existsByFestivalId(Long festivalId);
+
+    void deleteByFestivalIdAndFilmId(Long festivalId, Long filmId);
 }

@@ -60,6 +60,16 @@ public class RecensioneService {
                 && !recensioneRepository.existsByFilmIdAndUtenteId(filmId, utenteId);
     }
 
+    @Transactional(readOnly = true)
+    public Double mediaVoto(Long filmId) {
+        return recensioneRepository.mediaVotoByFilmId(filmId);
+    }
+
+    @Transactional(readOnly = true)
+    public long conteggio(Long filmId) {
+        return recensioneRepository.countByFilmId(filmId);
+    }
+
     @Transactional
     public Recensione salva(Recensione recensione) {
         if (recensioneRepository.existsByFilmIdAndUtenteId(recensione.getFilm().getId(), recensione.getUtente().getId())) {

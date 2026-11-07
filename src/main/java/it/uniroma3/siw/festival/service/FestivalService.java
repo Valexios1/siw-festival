@@ -1,6 +1,8 @@
 package it.uniroma3.siw.festival.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import it.uniroma3.siw.festival.model.Festival;
 import it.uniroma3.siw.festival.model.Film;
 import it.uniroma3.siw.festival.repository.FestivalRepository;
 import it.uniroma3.siw.festival.repository.FilmRepository;
+import it.uniroma3.siw.festival.repository.ProiezioneRepository;
 
 @Service
 public class FestivalService {
@@ -21,6 +24,9 @@ public class FestivalService {
 
     @Autowired
     private FilmRepository filmRepository;
+
+    @Autowired
+    private ProiezioneRepository proiezioneRepository;
 
     /*
      * Operazione di sola lettura: la transazione viene aperta in readOnly, cosi'
@@ -67,20 +73,37 @@ public class FestivalService {
      * sostituisce quella precedente, quindi l'operazione copre sia l'associazione
      * sia la rimozione di un film dal festival.
      *
-     * <p>La transazione comprende il caricamento del festival, la verifica che tutti
-     * i film richiesti esistano e l'aggiornamento della tabella di join: se una delle
-     * verifiche fallisce, nessuna riga viene modificata.
+     * <p>Quando un film viene rimosso dal festival, vengono cancellate prima tutte
+     * le proiezioni di quel film in quel festival: una proiezione richiede che il
+     * film partecipi al festival, quindi non puo' restare orfana.
+     *
+     * <p>La transazione comprende la verifica dei film richiesti, l'eliminazione
+     * delle proiezioni dei film rimossi e l'aggiornamento della tabella di join:
+     * se una delle operazioni fallisce, nessuna modifica viene applicata.
      */
     @Transactional
     public Festival associaFilm(Long festivalId, List<Long> filmIds) {
         Festival festival = findById(festivalId);
 
-        if (filmIds != null && !filmIds.isEmpty()) {
+        Set<Long> nuoviId = filmIds == null ? Set.of()
+                : filmIds.stream().filter(id -> id != null).collect(Collectors.toSet());
+        Set<Long> attualiId = festival.getFilm() == null ? Set.of()
+                : festival.getFilm().stream().map(Film::getId).collect(Collectors.toSet());
+
+        // Se un film viene tolto dal festival, le sue proiezioni in quel festival
+        // non sono piu' valide e vanno eliminate prima di aggiornare l'associazione.
+        for (Long filmId : attualiId) {
+            if (!nuoviId.contains(filmId)) {
+                proiezioneRepository.deleteByFestivalIdAndFilmId(festivalId, filmId);
+            }
+        }
+
+        if (!nuoviId.isEmpty()) {
             // JpaRepository.findAllById restituisce direttamente una List
-            List<Film> film = filmRepository.findAllById(filmIds);
+            List<Film> film = filmRepository.findAllById(nuoviId);
 
             // Verifica che tutti gli id richiesti siano stati trovati
-            if (film.size() != filmIds.size()) {
+            if (film.size() != nuoviId.size()) {
                 throw new FilmNotFoundException(0L);
             }
             festival.setFilm(film);

@@ -21,7 +21,7 @@ INSERT INTO users (id, name, surname, email, phone_number, nation) VALUES (1, 'A
 INSERT INTO users (id, name, surname, email, phone_number, nation) VALUES (2, 'Mario', 'Rossi', 'mario.rossi@example.it', '+39 333 1112222', 'Italia');
 
 INSERT INTO credentials (id, username, password, role, user_id) VALUES (1, 'admin', '$2a$10$CXiH0dLZy5pNCV4m9rlItOQnN2PoKQh5M.19J/42HEVG.N7HwMOV.', 'ADMIN', 1);
-INSERT INTO credentials (id, username, password, role, user_id) VALUES (2, 'mario', '$2a$10$CXiH0dLZy5pNCV4m9rlItOQnN2PoKQh5M.19J/42HEVG.N7HwMOV.', 'USER', 2);
+INSERT INTO credentials (id, username, password, role, user_id) VALUES (2, 'user', '$2a$10$CXiH0dLZy5pNCV4m9rlItOQnN2PoKQh5M.19J/42HEVG.N7HwMOV.', 'USER', 2);
 
 -- Allinea le sequenze Hibernate agli id appena inseriti, cosi' i successivi
 -- inserimenti (ad esempio una nuova registrazione) non collidono.

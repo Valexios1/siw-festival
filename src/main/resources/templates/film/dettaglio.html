@@ -53,6 +53,16 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="dettaglio-blocco">
+                <h3>Recensioni</h3>
+                <p th:if="${mediaVoto != null}">
+                    <strong>Media voti:</strong>
+                    <span th:text="${#numbers.formatDecimal(mediaVoto, 1, 1)}"></span> / 5
+                    <span th:text="'(' + ${conteggioRecensioni} + (${conteggioRecensioni} == 1 ? ' recensione' : ' recensioni') + ')'"></span>
+                </p>
+                <p th:if="${mediaVoto == null}">Nessuna recensione per questo film.</p>
+            </div>
         </div>
 
         <!-- Comandi di gestione: visibili solo all'amministratore -->
