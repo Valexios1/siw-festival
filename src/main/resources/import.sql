@@ -87,7 +87,7 @@ INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Salvatore
 INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Jep Gambardella', (SELECT id FROM film WHERE titolo = 'La grande bellezza'), (SELECT id FROM attore WHERE cognome = 'Servillo'));
 INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Il Biondo', (SELECT id FROM film WHERE titolo = 'Il buono, il brutto, il cattivo'), (SELECT id FROM attore WHERE cognome = 'Eastwood'));
 INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Tuco Ramirez', (SELECT id FROM film WHERE titolo = 'Il buono, il brutto, il cattivo'), (SELECT id FROM attore WHERE cognome = 'Wallach'));
-INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Vincent Vega', (SELECT id FROM film WHERE titolo = 'Pulp Fiction'), (SEid FROM attore WHERE cognome = 'Travolta'));
+INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Vincent Vega', (SELECT id FROM film WHERE titolo = 'Pulp Fiction'), (SELECT id FROM attore WHERE cognome = 'Travolta'));
 INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Gerd Wiesler', (SELECT id FROM film WHERE titolo = 'Le vite degli altri'), (SELECT id FROM attore WHERE cognome = 'Ganz'));
 INSERT INTO interpretazione (personaggio, film_id, attore_id) VALUES ('Attilio', (SELECT id FROM film WHERE titolo = 'Amarcord'), (SELECT id FROM attore WHERE cognome = 'Benigni'));
 

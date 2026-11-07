@@ -12,6 +12,12 @@ public interface FilmRepository extends JpaRepository<Film, Long> {
 
     List<Film> findAllByOrderByTitoloAsc();
 
+    List<Film> findByGenereOrderByTitoloAsc(Film.Genere genere);
+
+    List<Film> findByTitoloContainingIgnoreCaseOrderByTitoloAsc(String titolo);
+
+    List<Film> findByGenereAndTitoloContainingIgnoreCaseOrderByTitoloAsc(Film.Genere genere, String titolo);
+
     /*
      * Il film si carica sempre insieme ai festival ai quali partecipa: il dettaglio
      * mostra l'elenco dei festival, quindi senza fetch servirebbe una query per

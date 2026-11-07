@@ -1,0 +1,36 @@
+.filtri-film {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+    background-color: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--ombra);
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.filtri-film .form-group {
+    margin-bottom: 0;
+    flex: 1 1 220px;
+}
+
+.filtri-film .btn-azzera {
+    flex: 0 0 auto;
+}
+
+.filtri-film .btn-azzera:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.filtri-film .btn-azzera:disabled:hover {
+    background-color: var(--primario);
+}
+
+.film-widget-stato {
+    min-height: 1.5rem;
+    color: var(--testo-tenue);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}

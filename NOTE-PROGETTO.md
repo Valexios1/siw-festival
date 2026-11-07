@@ -49,11 +49,61 @@ sala) e `InterpretazioneRepository.findByFilmIdOrderByAttoreCognomeAscAttoreNome
 
 ### Analisi sperimentale (sezione 8.2)
 
-**Non ancora inclusa**: lo script che confronta due o più strategie di accesso agli stessi dati
-(numero di query SQL, tempo di esecuzione, entità caricate) sarà aggiunto in un secondo momento,
-insieme alle varianti di query che servono al confronto (accesso LAZY, `join fetch`, `@EntityGraph`).
-Il modello e le associazioni sono già predisposti: le varianti si possono aggiungere sul repository
-senza toccare il resto dell'applicazione.
+Il confronto è implementato nel test
+`src/test/java/it/uniroma3/siw/festival/AnalisiAccessoDatiTest.java`.
+
+Caso d'uso: caricamento di tutti i film del *Festival del Cinema di Roma* con le
+relative proiezioni. Le tre strategie leggono lo stesso insieme di dati:
+
+| Strategia | Come funziona | Query SQL |
+|---|---|---|
+| **LAZY** | una query per i film; `film.getProiezioni()` inizializza la collezione per ogni film | 1 + N |
+| **JOIN FETCH** | `select distinct f ... left join fetch f.proiezioni` | 1 |
+| **ENTITY GRAPH** | stessa query senza fetch, con `EntityGraph` sull'attributo `proiezioni` | 1 |
+
+Per ogni strategia il test stampa film caricati, proiezioni caricate, numero di
+query SQL (`Statistics.getPrepareStatementCount()`) e tempo complessivo. Ogni
+strategia gira in una transazione separata (persistence context nuovo), le
+statistiche vengono azzerate prima di ogni misura e un giro di warm-up precede
+le misure.
+
+Esecuzione (il test usa il PostgreSQL configurato in `application.properties`:
+lo schema viene ricreato e i dati sono letti da `import.sql`, come all'avvio
+dell'applicazione):
+
+```bash
+mvnw.cmd -Dtest=AnalisiAccessoDatiTest test   # Windows
+./mvnw -Dtest=AnalisiAccessoDatiTest test     # Linux/macOS
+```
+
+Risultato con i dati di esempio (6 film; 7 proiezioni perché *La grande
+bellezza* partecipa anche al Festival del Cinema Italiano):
+
+```
+Strategia: LAZY
+Film caricati: 6
+Proiezioni caricate: 7
+Query SQL: 7
+Tempo: 5.99 ms
+
+Strategia: JOIN FETCH
+Film caricati: 6
+Proiezioni caricate: 7
+Query SQL: 1
+Tempo: 4.12 ms
+
+Strategia: ENTITY GRAPH
+Film caricati: 6
+Proiezioni caricate: 7
+Query SQL: 1
+Tempo: 5.29 ms
+```
+
+Il confronto evidenzia l'N+1: LAZY esegue una query per ogni film (7 in totale),
+mentre `join fetch` ed `EntityGraph` risolvono lo stesso caso con una sola query.
+I tempi sono vicini perché il dataset è piccolo e il database è locale: la metrica
+significativa è il numero di query, che cresce con il numero di film.
+
 
 ## 3. Gestione delle transazioni
 
@@ -78,7 +128,8 @@ senza toccare il resto dell'applicazione.
 - Ruoli: `USER` (utenti registrati) e `ADMIN` (amministratori), letti dalla tabella `credentials`
   tramite `JdbcUserDetailsManager`.
 - Sono pubbliche solo le pagine di consultazione (`/`, `/festival/**`, `/film/**`, `/proiezioni`,
-  `/login`, `/register`). Tutto ciò che sta sotto `/admin/**` richiede il ruolo ADMIN; le
+  `/login`, `/register`), le risorse statiche (`/css/**`, `/js/**`) e le API di lettura
+  `/api/film/**`. Tutto ciò che sta sotto `/admin/**` richiede il ruolo ADMIN; le
   operazioni sulle recensioni e l'area personale richiedono un utente autenticato.
 - Le recensioni sono protette anche a livello applicativo: `RecensioneController.caricaMiaRecensione`
   verifica che la recensione appartenga all'utente collegato e, in caso contrario, si comporta come
@@ -95,6 +146,7 @@ senza toccare il resto dell'applicazione.
 | ≥ 6 entità significative | 9 entità (Festival, Film, Attore, Interpretazione, Sala, Proiezione, Recensione, User, Credentials) |
 | 1-N, N-1 e almeno una M-N | Festival→Proiezione, Sala→Proiezione, Film→Recensione, Festival↔Film (M-N), Film↔Attore (M-N con attributo) |
 | Casi d'uso pubblici | elenco festival, dettaglio festival (con film e proiezioni), dettaglio film (regista, cast, festival, proiezioni, recensioni), programma delle proiezioni |
+| Frontend React + endpoint REST | widget React nella pagina `/film` (cartella `frontend/`) alimentato da `GET /api/film` e `GET /api/film/generi` |
 | Casi d'uso utente registrato | inserimento, modifica ed eliminazione della propria recensione |
 | Casi d'uso amministratore | festival (creazione/modifica), film (inserimento/modifica), associazione film-festival (e rimozione), sale (inserimento/modifica), programmazione/modifica/cancellazione proiezione, moderazione recensioni |
 | Consistenza delle operazioni | nessuna proiezione in una sala già occupata nello stesso intervallo; il film deve partecipare al festival; una recensione per utente per film; il nome della sala è univoco; data di fine festival non precedente a quella di inizio |
@@ -108,10 +160,8 @@ senza toccare il resto dell'applicazione.
 - **Gestione delle immagini**: esclusa su richiesta esplicita. Non esiste alcun servizio di
   caricamento immagini, nessuna cartella `static/images` e nessun riferimento a immagini nei
   template (il logo è testuale).
-- **Parte React + API REST**: esclusa su richiesta esplicita. L'applicazione è interamente
-  server-side con Thymeleaf. **Questa è l'unica parte dei requisiti minimi del documento non
-  coperta** (sezione 9 e 10: almeno una parte del frontend in React e almeno un endpoint REST
-  utilizzato dal frontend) e va segnalata fra i malfunzionamenti noti in fase di consegna.
+- **Resto del frontend**: le pagine diverse da `/film` restano server-side con Thymeleaf;
+  React è usato solo per il widget con i filtri dei film, come richiesto.
 
 ## 7. Dati di esempio
 
@@ -133,7 +183,30 @@ psql -U postgres -c "CREATE DATABASE festival;"
 # compilare e avviare
 mvnw clean compile
 mvnw spring-boot:run
+
+# frontend (solo se si modifica il widget; il bundle è già committato)
+cd frontend
+npm install
+npm run build
 ```
 
 L'applicazione risponde su `http://localhost:8080`. La connessione al database è configurata in
 `src/main/resources/application.properties` (utente `postgres`, database `festival`).
+
+## 9. Widget React e API REST
+
+La pagina `/film` non renderizza più la lista lato server: contiene solo
+`<div id="film-list-root"></div>` e carica il bundle React compilato
+(`static/js/film-widget/film-widget.js`). Il widget filtra per titolo (con debounce)
+e per genere, e ricava i dati dalle API pubbliche di sola lettura:
+
+| Endpoint | Descrizione |
+|---|---|
+| `GET /api/film` | elenco film in ordine di titolo |
+| `GET /api/film?titolo=...&genere=...` | filtro per titolo (contains, case-insensitive) e genere |
+| `GET /api/film/generi` | valori di `Film.Genere` per la select |
+
+Il codice sorgente del widget è in `frontend/` (Vite + React); il bundle compilato è
+committato in `src/main/resources/static/js/film-widget/`, quindi l'applicazione non
+richiede Node a runtime. In sviluppo `npm run dev` avvia Vite su `localhost:5173` e
+inoltra `/api` a `localhost:8080`.

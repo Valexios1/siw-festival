@@ -32,6 +32,22 @@ public class FilmService {
         return filmRepository.findAllByOrderByTitoloAsc();
     }
 
+    @Transactional(readOnly = true)
+    public List<Film> cerca(Film.Genere genere, String titolo) {
+        String filtroTitolo = (titolo == null || titolo.isBlank()) ? null : titolo.trim();
+
+        if (genere == null && filtroTitolo == null) {
+            return filmRepository.findAllByOrderByTitoloAsc();
+        }
+        if (genere == null) {
+            return filmRepository.findByTitoloContainingIgnoreCaseOrderByTitoloAsc(filtroTitolo);
+        }
+        if (filtroTitolo == null) {
+            return filmRepository.findByGenereOrderByTitoloAsc(genere);
+        }
+        return filmRepository.findByGenereAndTitoloContainingIgnoreCaseOrderByTitoloAsc(genere, filtroTitolo);
+    }
+
     /*
      * Dettaglio film: i festival ai quali il film partecipa arrivano con la stessa
      * query del film (EntityGraph dichiarato su FilmRepository.findById).

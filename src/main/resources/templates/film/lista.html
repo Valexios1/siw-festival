@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Siw Festival - Film</title>
     <link rel="stylesheet" href="/css/stile.css" />
+    <link rel="stylesheet" href="/css/film-widget.css" />
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
@@ -19,34 +20,10 @@
         <a class="btn" th:href="@{/admin/film/nuovo}">Nuovo film</a>
     </p>
 
-    <p th:if="${#lists.isEmpty(film)}">Nessun film registrato.</p>
-
-    <div class="griglia-card" th:unless="${#lists.isEmpty(film)}">
-        <div class="card" th:each="f : ${film}">
-            <h2 th:text="${f.titolo}">Titolo</h2>
-            <ul class="lista-info">
-                <li>
-                    <strong>Anno:</strong>
-                    <span th:text="${f.anno}">1972</span>
-                </li>
-                <li>
-                    <strong>Regista:</strong>
-                    <span th:text="${f.regista}">Regista</span>
-                </li>
-                <li>
-                    <strong>Genere:</strong>
-                    <span th:text="${f.genere}">DRAMMATICO</span>
-                </li>
-                <li>
-                    <strong>Durata:</strong>
-                    <span th:text="${f.durata}">175</span> min
-                </li>
-            </ul>
-            <a class="btn" th:href="@{/film/{id}(id=${f.id})}">Dettaglio</a>
-        </div>
-    </div>
+    <div id="film-list-root"></div>
 </main>
 
+<script type="module" src="/js/film-widget/film-widget.js"></script>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
