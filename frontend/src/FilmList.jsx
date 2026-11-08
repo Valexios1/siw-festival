@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const API = '/api/film';
 
@@ -20,17 +21,11 @@ export default function FilmList() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch(`${API}/generi`, { signal: controller.signal })
-      .then((risposta) => {
-        if (!risposta.ok) {
-          throw new Error('Impossibile caricare i generi.');
-        }
-        return risposta.json();
-      })
-      .then(setGeneri)
+    axios.get(`${API}/generi`, { signal: controller.signal })
+      .then((risposta) => setGeneri(risposta.data))
       .catch((e) => {
-        if (e.name !== 'AbortError') {
-          setErrore(e.message);
+        if (!axios.isCancel(e) && e.name !== 'CanceledError') {
+          setErrore('Impossibile caricare i generi.');
         }
       });
 
@@ -52,22 +47,16 @@ export default function FilmList() {
       setCaricamento(true);
       setErrore(null);
 
-      fetch(query ? `${API}?${query}` : API, { signal: controller.signal })
+      axios.get(query ? `${API}?${query}` : API, { signal: controller.signal })
         .then((risposta) => {
-          if (!risposta.ok) {
-            throw new Error('Impossibile caricare i film.');
-          }
-          return risposta.json();
-        })
-        .then((dati) => {
-          setFilm(dati);
+          setFilm(risposta.data);
           setCaricamento(false);
         })
         .catch((e) => {
-          if (e.name === 'AbortError') {
+          if (axios.isCancel(e) || e.name === 'CanceledError') {
             return;
           }
-          setErrore(e.message);
+          setErrore('Impossibile caricare i film.');
           setCaricamento(false);
         });
     }, 250);
