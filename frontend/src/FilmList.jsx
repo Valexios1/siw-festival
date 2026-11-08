@@ -11,6 +11,7 @@ function etichettaGenere(genere) {
 }
 
 export default function FilmList() {
+  const [titolo, setTitolo] = useState('');
   const [genere, setGenere] = useState('');
   const [film, setFilm] = useState([]);
   const [generi, setGeneri] = useState([]);
@@ -23,8 +24,8 @@ export default function FilmList() {
       .catch(() => setErrore('Impossibile caricare i generi.'));
   }, []);
 
-  // il catalogo si carica una sola volta: il filtro per genere viene applicato
-  // nel browser, senza una richiesta a ogni selezione
+  // il catalogo si carica una sola volta: i filtri vengono applicati nel browser,
+  // senza una richiesta a ogni modifica
   useEffect(() => {
     axios.get(API)
       .then((risposta) => setFilm(risposta.data))
@@ -32,17 +33,33 @@ export default function FilmList() {
       .finally(() => setCaricamento(false));
   }, []);
 
-  // il filtraggio viene ricalcolato solo quando cambiano il catalogo o il genere
-  // scelto; se il componente si ridisegna per altri motivi, il risultato viene riusato
+  // il filtraggio viene ricalcolato solo quando cambiano il catalogo o i filtri;
+  // se il componente si ridisegna per altri motivi, il risultato viene riusato
   const filmFiltrati = useMemo(() => {
-    return film.filter((f) => !genere || f.genere === genere);
-  }, [film, genere]);
+    const titoloCercato = titolo.trim().toLowerCase();
+    return film.filter((f) =>
+      (!titoloCercato || f.titolo.toLowerCase().includes(titoloCercato)) &&
+      (!genere || f.genere === genere)
+    );
+  }, [film, titolo, genere]);
 
   const conteggio = filmFiltrati.length === 1 ? '1 film trovato' : `${filmFiltrati.length} film trovati`;
 
   return (
     <>
       <div className="filtri-film">
+        <div className="form-group">
+          <label htmlFor="filtro-titolo">Cerca per nome</label>
+          <input
+            id="filtro-titolo"
+            type="search"
+            value={titolo}
+            onChange={(evento) => setTitolo(evento.target.value)}
+            placeholder="Es. Il Padrino"
+            autoComplete="off"
+          />
+        </div>
+
         <div className="form-group">
           <label htmlFor="filtro-genere">Genere</label>
           <select
@@ -68,7 +85,7 @@ export default function FilmList() {
       {errore && <div className="error-msg">{errore}</div>}
 
       {!caricamento && !errore && filmFiltrati.length === 0 && (
-        <p>Nessun film trovato con il genere selezionato.</p>
+        <p>Nessun film trovato con i filtri selezionati.</p>
       )}
 
       {!errore && filmFiltrati.length > 0 && (
