@@ -1,6 +1,7 @@
 package it.uniroma3.siw.festival.controller;
 
 import it.uniroma3.siw.festival.exception.AttoreNotFoundException;
+import it.uniroma3.siw.festival.exception.CredentialsNotFoundException;
 import it.uniroma3.siw.festival.exception.FestivalNotFoundException;
 import it.uniroma3.siw.festival.exception.FilmNotFoundException;
 import it.uniroma3.siw.festival.exception.ProiezioneNotFoundException;
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ FestivalNotFoundException.class, FilmNotFoundException.class,
             AttoreNotFoundException.class, SalaNotFoundException.class,
             ProiezioneNotFoundException.class, RecensioneNotFoundException.class,
-            UserNotFoundException.class })
+            UserNotFoundException.class, CredentialsNotFoundException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException ex, Model model) {
         model.addAttribute("messaggio", ex.getMessage());
