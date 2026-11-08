@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
 const API = '/api/film';
@@ -11,7 +11,6 @@ function etichettaGenere(genere) {
 }
 
 export default function FilmList() {
-  const [titolo, setTitolo] = useState('');
   const [genere, setGenere] = useState('');
   const [film, setFilm] = useState([]);
   const [generi, setGeneri] = useState([]);
@@ -19,71 +18,31 @@ export default function FilmList() {
   const [errore, setErrore] = useState(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    axios.get(`${API}/generi`, { signal: controller.signal })
+    axios.get(`${API}/generi`)
       .then((risposta) => setGeneri(risposta.data))
-      .catch((e) => {
-        if (!axios.isCancel(e) && e.name !== 'CanceledError') {
-          setErrore('Impossibile caricare i generi.');
-        }
-      });
-
-    return () => controller.abort();
+      .catch(() => setErrore('Impossibile caricare i generi.'));
   }, []);
 
+  // il catalogo si carica una sola volta: il filtro per genere viene applicato
+  // nel browser, senza una richiesta a ogni selezione
   useEffect(() => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => {
-      const parametri = new URLSearchParams();
-      if (titolo.trim()) {
-        parametri.set('titolo', titolo.trim());
-      }
-      if (genere) {
-        parametri.set('genere', genere);
-      }
+    axios.get(API)
+      .then((risposta) => setFilm(risposta.data))
+      .catch(() => setErrore('Impossibile caricare i film.'))
+      .finally(() => setCaricamento(false));
+  }, []);
 
-      const query = parametri.toString();
-      setCaricamento(true);
-      setErrore(null);
+  // il filtraggio viene ricalcolato solo quando cambiano il catalogo o il genere
+  // scelto; se il componente si ridisegna per altri motivi, il risultato viene riusato
+  const filmFiltrati = useMemo(() => {
+    return film.filter((f) => !genere || f.genere === genere);
+  }, [film, genere]);
 
-      axios.get(query ? `${API}?${query}` : API, { signal: controller.signal })
-        .then((risposta) => {
-          setFilm(risposta.data);
-          setCaricamento(false);
-        })
-        .catch((e) => {
-          if (axios.isCancel(e) || e.name === 'CanceledError') {
-            return;
-          }
-          setErrore('Impossibile caricare i film.');
-          setCaricamento(false);
-        });
-    }, 250);
-
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [titolo, genere]);
-
-  const conteggio = film.length === 1 ? '1 film trovato' : `${film.length} film trovati`;
+  const conteggio = filmFiltrati.length === 1 ? '1 film trovato' : `${filmFiltrati.length} film trovati`;
 
   return (
     <>
       <div className="filtri-film">
-        <div className="form-group">
-          <label htmlFor="filtro-titolo">Cerca per titolo</label>
-          <input
-            id="filtro-titolo"
-            type="search"
-            value={titolo}
-            onChange={(evento) => setTitolo(evento.target.value)}
-            placeholder="Es. Il Padrino"
-            autoComplete="off"
-          />
-        </div>
-
         <div className="form-group">
           <label htmlFor="filtro-genere">Genere</label>
           <select
@@ -99,18 +58,6 @@ export default function FilmList() {
             ))}
           </select>
         </div>
-
-        <button
-          type="button"
-          className="btn btn-azzera"
-          onClick={() => {
-            setTitolo('');
-            setGenere('');
-          }}
-          disabled={!titolo && !genere}
-        >
-          Azzera filtri
-        </button>
       </div>
 
       <div className="film-widget-stato" aria-live="polite">
@@ -120,13 +67,13 @@ export default function FilmList() {
 
       {errore && <div className="error-msg">{errore}</div>}
 
-      {!caricamento && !errore && film.length === 0 && (
-        <p>Nessun film trovato con i filtri selezionati.</p>
+      {!caricamento && !errore && filmFiltrati.length === 0 && (
+        <p>Nessun film trovato con il genere selezionato.</p>
       )}
 
-      {!errore && film.length > 0 && (
+      {!errore && filmFiltrati.length > 0 && (
         <div className="griglia-card">
-          {film.map((f) => (
+          {filmFiltrati.map((f) => (
             <div className="card" key={f.id}>
               <h2>{f.titolo}</h2>
               <ul className="lista-info">
